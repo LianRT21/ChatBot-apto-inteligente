@@ -1,0 +1,31 @@
+name: Compilar Firmware Apartamento Inteligente
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Compilar Firmware ESP32 en Español (bread-compact-esp32)
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:release-v6.1
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+
+      - name: Compilar firmware bread-compact-esp32 en Español
+        shell: bash
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          source "$IDF_PATH/export.sh"
+          python scripts/build.py bread-compact-esp32 --name bread-compact-esp32 --language es-ES
+
+      - name: Subir archivo binario listo para flashear
+        uses: actions/upload-artifact@v4
+        with:
+          name: Firmware-Apartamento-Inteligente-ESP32
+          path: build/merged-binary.bin
+          if-no-files-found: error
