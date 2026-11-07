@@ -1,0 +1,271 @@
+================================================================================
+ESPECIFICACIONES TÉCNICAS Y GUÍA DE CULMINACIÓN DEL PROYECTO
+MAQUETA DE APARTAMENTO / PENTHOUSE INTELIGENTE CON ASISTENTE DE VOZ XIAOZHI ESP32
+================================================================================
+Fecha de emisión: Noviembre 2026
+Plataforma: ESP32 DevKit v1 (30 pines) - ESP-WROOM-32
+Framework: ESP-IDF v6 (v6.0.1+ / release/v6.1)
+Arquitectura: Control Domótico por Voz mediante Model Context Protocol (MCP)
+
+--------------------------------------------------------------------------------
+1. RESUMEN DEL PROYECTO Y PRINCIPIO FUNDAMENTAL
+--------------------------------------------------------------------------------
+El objetivo de este proyecto es transformar el asistente de voz de IA XiaoZhi en
+el cerebro domótico de una maqueta a escala de un apartamento / penthouse inteligente.
+La vivienda cuenta con:
+  - Cocina
+  - Sala
+  - Habitación
+  - Baño
+  - Terraza
+
+El circuito controla:
+  - 5 zonas de iluminación (bombillos/LEDs independientes).
+  - 4 puertas mecánicas mediante servomotores de 180 grados con modulación PWM.
+  - Interfaz visual mediante pantalla OLED SSD1306.
+  - Captura y reproducción de audio en tiempo real mediante micrófono I2S y amplificador I2S.
+
+[PRINCIPIO FUNDAMENTAL: PRESERVACIÓN DE LAS FUNCIONES DE CHATBOT]
+El asistente de voz conserva el 100% de sus capacidades conversacionales originales:
+  * El chatbot HABLA, RESPONDE, EXPLICA y CONVERSA de forma totalmente normal.
+  * Si el usuario hace una pregunta general (ej: "¿Cómo estás?", "¿Por qué el cielo es azul?",
+    "Cuéntame una historia", "¿Qué hora es?"), el asistente responde con voz natural y texto.
+  * El control del apartamento NO REEMPLAZA al chatbot, sino que lo COMPLEMENTA mediante
+    herramientas MCP (Model Context Protocol).
+  * Si el usuario da una orden física (ej: "Enciende la cocina y abre la habitación"),
+    el chatbot acciona el hardware correspondiente Y AL MISMO TIEMPO responde por voz
+    confirmando la acción de manera humana y educada.
+
+
+--------------------------------------------------------------------------------
+2. LISTA DE COMPONENTES DE HARDWARE NECESARIOS
+--------------------------------------------------------------------------------
+1. Microcontrolador:
+   - 1x Tarjeta ESP32 DevKit v1 (modelo ESP-WROOM-32 de 30 pines).
+
+2. Subsistema de Audio:
+   - 1x Micrófono digital I2S INMP441 (omnidireccional).
+   - 1x Amplificador digital de audio I2S MAX98357A (3W Clase D).
+   - 1x Parlante de 4 Ohmios, 3 Vatios (diámetro aprox. 40mm).
+
+3. Subsistema Visual:
+   - 1x Pantalla OLED 0.96 pulgadas I2C (128x64 píxeles, controlador SSD1306).
+
+4. Subsistema de Iluminación (5 Zonas):
+   - 5x Diodos LED (o bombillos piloto miniatura de 3.3V / 5V).
+   - 5x Resistencias de 220 Ohmios (1/4 Watt).
+
+5. Subsistema de Puertas (4 Puertas con Servomotores):
+   - 4x Servomotores de 180° Micro SG90 (o MG90S con piñones metálicos).
+
+6. Alimentación y Filtros:
+   - 1x Fuente de poder externa regulada de 5V DC @ 3A (mínimo 2.5A).
+   - 1x Condensador electrolítico de 220 uF a 470 uF (16V o 25V) para desacoplo de servos.
+   - Protoboard grande o placa de circuito perforada.
+   - Cables jumper dupont macho-macho y macho-hembra.
+
+
+--------------------------------------------------------------------------------
+3. MAPA DE PINES (PINOUT COMPLETO ESP32 DEVKIT V1 - 30 PINES)
+--------------------------------------------------------------------------------
+Todos los pines han sido asignados de forma estricta para evitar pines de arranque
+(strapping pins como GPIO 12) y garantizar cero conflictos:
+
+LADO IZQUIERDO (Pines 1 al 15, de arriba a abajo):
+  Pin 1:  EN   --> Botón Reset / Dejar libre
+  Pin 2:  VP   --> GPIO 36 (Solo entrada / Libre)
+  Pin 3:  VN   --> GPIO 39 (Solo entrada / Libre)
+  Pin 4:  D34  --> GPIO 34 (Solo entrada / Libre)
+  Pin 5:  D35  --> GPIO 35 (Solo entrada / Libre)
+  Pin 6:  D32  --> INMP441 Micrófono SD (Datos de entrada de audio)
+  Pin 7:  D33  --> MAX98357A Amplificador DIN (Datos de salida de audio)
+  Pin 8:  D25  --> INMP441 Micrófono WS (Word Select / Reloj de trama)
+  Pin 9:  D26  --> INMP441 Micrófono SCK (Reloj de bits de audio)
+  Pin 10: D27  --> MAX98357A Amplificador LRC (Reloj de canal I2S)
+  Pin 11: D14  --> MAX98357A Amplificador BCLK (Reloj de bits I2S)
+  Pin 12: D12  --> GPIO 12 (Strapping pin / Dejar libre para evitar fallo de boot)
+  Pin 13: D13  --> SERVO 1: Puerta Principal (Señal PWM LEDC Canal 0)
+  Pin 14: GND  --> Tierra común (Conectar al riel negativo general)
+  Pin 15: VIN  --> Entrada +5V de la Fuente Externa
+
+LADO DERECHO (Pines 16 al 30, de abajo a arriba):
+  Pin 16: 3V3  --> Salida 3.3V del ESP32 (Alimenta SOLO OLED VCC y Micrófono VDD)
+  Pin 17: GND  --> Tierra común (Conectar al riel negativo general)
+  Pin 18: D15  --> OLED Pantalla SCL (Línea de reloj I2C)
+  Pin 19: D2   --> GPIO 2 (LED azul integrado de la placa)
+  Pin 20: D4   --> OLED Pantalla SDA (Línea de datos I2C)
+  Pin 21: RX2  --> GPIO 16 --> SERVO 2: Puerta Habitación (Señal PWM LEDC Canal 1)
+  Pin 22: TX2  --> GPIO 17 --> SERVO 3: Puerta Baño (Señal PWM LEDC Canal 2)
+  Pin 23: D5   --> GPIO 5  --> SERVO 4: Puerta Terraza (Señal PWM LEDC Canal 3)
+  Pin 24: D18  --> GPIO 18 --> LED 1: Luz Cocina (Con resistencia 220 Ohm a GND)
+  Pin 25: D19  --> GPIO 19 --> LED 2: Luz Sala (Con resistencia 220 Ohm a GND)
+  Pin 26: D21  --> GPIO 21 --> LED 3: Luz Habitación (Con resistencia 220 Ohm a GND)
+  Pin 27: RX0  --> GPIO 3  (Reservado comunicación UART / USB)
+  Pin 28: TX0  --> GPIO 1  (Reservado comunicación UART / USB)
+  Pin 29: D22  --> GPIO 22 --> LED 4: Luz Baño (Con resistencia 220 Ohm a GND)
+  Pin 30: D23  --> GPIO 23 --> LED 5: Luz Terraza (Con resistencia 220 Ohm a GND)
+
+
+--------------------------------------------------------------------------------
+4. ARQUITECTURA ELÉCTRICA Y REGLAS CRÍTICAS DE CONEXIÓN
+--------------------------------------------------------------------------------
+[REGLA 1: CORRECCIÓN DEL AMPLIFICADOR MAX98357A]
+* En el diagrama original de referencia, el pin Vin del MAX98357A estaba a 3V3.
+* DEBE CONECTARSE A +5V (Pin VIN o directo a la fuente externa).
+* Razón: El regulador AMS1117 de 3.3V no soporta el consumo dinámico del parlante de 3W
+  y se reinicia por caída de voltaje (Brownout detector). Al conectarlo a 5V, suena más
+  fuerte y el ESP32 no sufre.
+
+[REGLA 2: ALIMENTACIÓN SEPARADA DE SERVOMOTORES]
+* Los 4 servomotores SG90 tienen cables:
+    Rojo:   Alimentación positiva (+5V)
+    Marrón: Tierra (GND)
+    Naranja o Amarillo: Señal de control PWM
+* NUNCA conectar el cable rojo de los servos al pin 3V3 del ESP32.
+* Conectar los cables rojos de los 4 servos directamente al riel de +5V de la fuente externa.
+
+[REGLA 3: CONDENSADOR ELECTROLÍTICO DE DESACOPLO]
+* Colocar un condensador de 220 uF a 470 uF (16V o superior) en paralelo con el riel de
+  alimentación de los servos (+5V y GND). Pata corta/franja blanca a GND.
+* Este condensador absorbe los picos de corriente instantáneos cuando las puertas se abren
+  o cierran, eliminando ruidos en el micrófono y evitando caídas de tensión.
+
+[REGLA 4: MASA COMÚN UNIFICADA (COMMON GROUND)]
+* Todos los cables negativos deben estar eléctricamente interconectados:
+    - GND de la fuente externa de 5V
+    - GND del ESP32
+    - GND del micrófono INMP441 (y su pin L/R)
+    - GND del amplificador MAX98357A
+    - GND de la pantalla OLED
+    - GND de los 4 servomotores
+    - Cátodos (mediante resistencia de 220 Ohm) de los 5 LEDs
+
+
+--------------------------------------------------------------------------------
+5. ARQUITECTURA DE SOFTWARE E IMPLEMENTACIÓN MCP
+--------------------------------------------------------------------------------
+El código fuente ha sido completamente programado y estructurado en la solución:
+
+1. main/boards/common/smart_apartment_config.h:
+   - Contiene la definición de pines por defecto para el ESP32 estándar.
+   - Parámetros de PWM LEDC: Frecuencia 50 Hz, resolución 13 bits (0 a 8191).
+   - Rangos de pulso de servo: 0.5 ms (0 grados) a 2.5 ms (180 grados).
+   - Ángulos por defecto: Cerrada = 0°, Abierta = 90° (configurable a 180°).
+   - Lógica de iluminación: APARTMENT_LIGHTS_ACTIVE_HIGH = true.
+
+2. main/boards/common/smart_apartment_controller.h y .cc:
+   - Implementa la clase Singleton SmartApartmentController.
+   - Gestiona el hardware de los 5 pines de salida y los 4 canales PWM.
+   - Normalizador lingüístico tolerante a acentos y modismos en español:
+       "cocina", "sala", "habitacion" / "cuarto" / "dormitorio",
+       "baño" / "bano" / "sanitario", "terraza" / "balcon", "todas".
+   - Acciones reconocidas:
+       "encender" / "prender" / "on" / "1" / "true"
+       "apagar" / "off" / "0" / "false"
+       "abrir" / "open" / "subir"
+       "cerrar" / "close" / "bajar"
+   - Notificaciones automáticas en pantalla OLED: Cada vez que se conmuta una luz
+     o se acciona un servo, aparece un aviso emergente (ej: "Luz Cocina: ON",
+     "Puerta Habitación: ABIERTA").
+
+3. main/CMakeLists.txt:
+   - Archivo smart_apartment_controller.cc incluido en la lista de compilación de boards/common.
+
+4. main/application.cc:
+   - Llamada de inicialización SmartApartmentController::GetInstance().Initialize()
+     integrada en el arranque del sistema.
+
+5. Herramientas MCP Registradas para el LLM:
+   a) apartment.control_light:
+      Controla luces de zonas individuales o "todas".
+   b) apartment.control_door:
+      Controla apertura, cierre y ángulos específicos de servomotores.
+   c) apartment.get_status:
+      Genera y reporta un JSON en tiempo real con el estado de cada bombillo y puerta.
+
+
+--------------------------------------------------------------------------------
+6. DIÁLOGOS DE PRUEBA Y FUNCIONAMIENTO COMPLEMENTARIO
+--------------------------------------------------------------------------------
+Caso A: Conversación Normal (Chatbot Puro)
+  Usuario: "Hola, ¿cuál es la distancia de la Tierra a la Luna?"
+  ESP32:   [El LLM no ejecuta ninguna herramienta física]
+           Responde por el parlante: "La distancia media entre la Tierra y la Luna
+           es de aproximadamente 384.400 kilómetros..."
+
+Caso B: Comando Domótico Individual
+  Usuario: "Enciende la luz de la cocina"
+  ESP32:   [El LLM ejecuta apartment.control_light(zone='cocina', action='on')]
+           - El LED D18 se enciende inmediatamente.
+           - En la pantalla OLED aparece: "Luz Cocina: ON".
+           - El asistente responde por voz: "He encendido la luz de la cocina."
+
+Caso C: Comando de Apertura de Puerta
+  Usuario: "Abre la puerta de la habitación"
+  ESP32:   [El LLM ejecuta apartment.control_door(door='habitacion', action='open')]
+           - El servo de RX2 gira a 90 grados suavemente.
+           - En la pantalla OLED aparece: "Puerta Habitación: ABIERTA".
+           - El asistente responde por voz: "Puerta de la habitación abierta."
+
+Caso D: Comando Mixto (Chatbot + Domótica)
+  Usuario: "Voy a dormir, apaga todas las luces, cierra la puerta principal y deséame buenas noches"
+  ESP32:   [El LLM ejecuta apartment.control_light(zone='todas', action='off')]
+           [El LLM ejecuta apartment.control_door(door='principal', action='close')]
+           - Se apagan los 5 LEDs.
+           - El servo de D13 regresa a 0 grados.
+           - El asistente responde por voz: "Todas las luces han sido apagadas y la puerta
+             principal está asegurada. Que descanses y tengas muy buenas noches."
+
+Caso E: Consulta de Estado
+  Usuario: "¿Cómo está la casa?"
+  ESP32:   [El LLM ejecuta apartment.get_status()]
+           - Lee el JSON de estado generado por el ESP32.
+           - Responde por voz: "Actualmente la luz de la sala está encendida y las demás
+             están apagadas. La puerta de la terraza se encuentra abierta."
+
+
+--------------------------------------------------------------------------------
+7. CALIBRACIÓN MECÁNICA DE LAS PUERTAS
+--------------------------------------------------------------------------------
+1. Antes de pegar o atornillar los brazos plásticos (horns) de los servos a las puertas
+   de la maqueta, enciende el circuito con el firmware cargado.
+2. Al arrancar, el controlador envía automáticamente la señal de 0 grados (posición cerrada)
+   a los 4 canales PWM.
+3. Con el servo energizado y firme en su posición de 0 grados, coloca el brazo plástico
+   orientado exactamente en la posición donde la puerta queda cerrada contra el marco.
+4. Luego di por voz: "Abre la puerta". El servo girará 90 grados hacia el interior o exterior
+   según la orientación de tu bisagra.
+
+
+--------------------------------------------------------------------------------
+8. COMPILACIÓN Y FLASHEO DEL FIRMWARE
+--------------------------------------------------------------------------------
+El nombre canónico de la placa en el repositorio para tu configuración es:
+  bread-compact-esp32
+
+Para compilar y empaquetar desde el entorno ESP-IDF:
+  python scripts/build.py bread-compact-esp32 --name bread-compact-esp32
+
+Para flashear directamente al puerto COM de tu ESP32:
+  idf.py -p COMx flash monitor
+
+(Donnde 'COMx' es el puerto serie de tu ESP32 en el Administrador de Dispositivos).
+
+
+--------------------------------------------------------------------------------
+9. UBICACIÓN DE LOS DIAGRAMAS GRÁFICOS GENERADOS
+--------------------------------------------------------------------------------
+Se han renderizado y guardado en alta resolución las imágenes de arquitectura en:
+  - docs/diagramas_arquitectura/diagrama_1_distribucion_potencia.png
+  - docs/diagramas_arquitectura/diagrama_2_pines_esp32_devkit.png
+  - docs/diagramas_arquitectura/diagrama_3_arquitectura_chatbot_mcp.png
+
+Archivos vectoriales HTML interactivos correspondientes:
+  - docs/diagramas_arquitectura/diagrama_1_distribucion_potencia.html
+  - docs/diagramas_arquitectura/diagrama_2_pines_esp32_devkit.html
+  - docs/diagramas_arquitectura/diagrama_3_arquitectura_chatbot_mcp.html
+
+================================================================================
+FIN DEL DOCUMENTO DE ESPECIFICACIONES TÉCNICAS
+================================================================================
+

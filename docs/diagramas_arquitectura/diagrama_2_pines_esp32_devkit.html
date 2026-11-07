@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Diagrama 2: Pinout y Conexiones del ESP32 DevKit v1 (30 Pines)</title>
+<style>
+  body {
+    margin: 0;
+    padding: 25px;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #f8fafc;
+    width: 1200px;
+    height: 920px;
+    box-sizing: border-box;
+  }
+  h1 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    color: #38bdf8;
+    text-align: center;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 20px;
+  }
+  .diagram-svg {
+    width: 100%;
+    height: 820px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+  <h1>🔌 MAPA COMPLETO DE PINES Y CONEXIONES (ESP32 DEVKIT V1 - 30 PINES)</h1>
+  <div class="subtitle">Asignación 100% libre de conflictos para Maqueta de Apartamento Inteligente XiaoZhi</div>
+
+  <svg class="diagram-svg" viewBox="0 0 1140 800" xmlns="http://www.w3.org/2000/svg">
+    <!-- ESP32 Board Central Shape -->
+    <rect x="420" y="50" width="300" height="700" rx="16" fill="#0f172a" stroke="#475569" stroke-width="3"/>
+    
+    <!-- Chip metal shield -->
+    <rect x="460" y="80" width="220" height="190" rx="8" fill="#334155" stroke="#64748b" stroke-width="2"/>
+    <text x="570" y="140" text-anchor="middle" fill="#e2e8f0" font-size="20" font-weight="bold">ESP-WROOM-32</text>
+    <text x="570" y="170" text-anchor="middle" fill="#94a3b8" font-size="12">Wi-Fi + Bluetooth LE</text>
+    <text x="570" y="210" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">ESP32 DevKit v1</text>
+    <text x="570" y="235" text-anchor="middle" fill="#64748b" font-size="11">Versión de 30 Pines</text>
+
+    <!-- USB Port & Buttons at Bottom -->
+    <rect x="525" y="700" width="90" height="40" rx="4" fill="#64748b"/>
+    <text x="570" y="725" text-anchor="middle" fill="#0f172a" font-size="11" font-weight="bold">MICRO-USB</text>
+    <rect x="440" y="680" width="50" height="25" rx="4" fill="#334155" stroke="#64748b"/>
+    <text x="465" y="697" text-anchor="middle" fill="#cbd5e1" font-size="10">EN</text>
+    <rect x="650" y="680" width="50" height="25" rx="4" fill="#334155" stroke="#64748b"/>
+    <text x="675" y="697" text-anchor="middle" fill="#cbd5e1" font-size="10">BOOT</text>
+
+    <!-- LEFT SIDE PINS (15 Pins) -->
+    <!-- y start = 90, step = 38 -->
+    <!-- Helper macro in mind: Pin box + label -->
+    
+    <!-- Pin 1: EN -->
+    <rect x="400" y="80" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="96" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">EN</text>
+    <text x="380" y="96" text-anchor="end" fill="#64748b" font-size="11">Reset (No conectar)</text>
+
+    <!-- Pin 2: VP (GPIO36) -->
+    <rect x="400" y="118" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="134" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">VP</text>
+    <text x="380" y="134" text-anchor="end" fill="#64748b" font-size="11">Input only (Libre)</text>
+
+    <!-- Pin 3: VN (GPIO39) -->
+    <rect x="400" y="156" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="172" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">VN</text>
+    <text x="380" y="172" text-anchor="end" fill="#64748b" font-size="11">Input only (Libre)</text>
+
+    <!-- Pin 4: D34 -->
+    <rect x="400" y="194" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="210" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">D34</text>
+    <text x="380" y="210" text-anchor="end" fill="#64748b" font-size="11">Input only (Libre)</text>
+
+    <!-- Pin 5: D35 -->
+    <rect x="400" y="232" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="248" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">D35</text>
+    <text x="380" y="248" text-anchor="end" fill="#64748b" font-size="11">Input only (Libre)</text>
+
+    <!-- Pin 6: D32 (INMP441 SD) -->
+    <rect x="400" y="270" width="40" height="24" rx="4" fill="#059669"/>
+    <text x="415" y="286" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D32</text>
+    <path d="M 395 282 L 280 282" stroke="#10b981" stroke-width="2"/>
+    <rect x="90" y="268" width="180" height="28" rx="6" fill="#064e3b" stroke="#10b981"/>
+    <text x="180" y="287" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="bold">INMP441 (Mic) - SD</text>
+
+    <!-- Pin 7: D33 (MAX98357A DIN) -->
+    <rect x="400" y="308" width="40" height="24" rx="4" fill="#0284c7"/>
+    <text x="415" y="324" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D33</text>
+    <path d="M 395 320 L 280 320" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="90" y="306" width="180" height="28" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="180" y="325" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="bold">MAX98357A (Spk) - DIN</text>
+
+    <!-- Pin 8: D25 (INMP441 WS) -->
+    <rect x="400" y="346" width="40" height="24" rx="4" fill="#059669"/>
+    <text x="415" y="362" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D25</text>
+    <path d="M 395 358 L 280 358" stroke="#10b981" stroke-width="2"/>
+    <rect x="90" y="344" width="180" height="28" rx="6" fill="#064e3b" stroke="#10b981"/>
+    <text x="180" y="363" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="bold">INMP441 (Mic) - WS</text>
+
+    <!-- Pin 9: D26 (INMP441 SCK) -->
+    <rect x="400" y="384" width="40" height="24" rx="4" fill="#059669"/>
+    <text x="415" y="400" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D26</text>
+    <path d="M 395 396 L 280 396" stroke="#10b981" stroke-width="2"/>
+    <rect x="90" y="382" width="180" height="28" rx="6" fill="#064e3b" stroke="#10b981"/>
+    <text x="180" y="401" text-anchor="middle" fill="#a7f3d0" font-size="12" font-weight="bold">INMP441 (Mic) - SCK</text>
+
+    <!-- Pin 10: D27 (MAX98357A LRC) -->
+    <rect x="400" y="422" width="40" height="24" rx="4" fill="#0284c7"/>
+    <text x="415" y="438" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D27</text>
+    <path d="M 395 434 L 280 434" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="90" y="420" width="180" height="28" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="180" y="439" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="bold">MAX98357A (Spk) - LRC</text>
+
+    <!-- Pin 11: D14 (MAX98357A BCLK) -->
+    <rect x="400" y="460" width="40" height="24" rx="4" fill="#0284c7"/>
+    <text x="415" y="476" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D14</text>
+    <path d="M 395 472 L 280 472" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="90" y="458" width="180" height="28" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="180" y="477" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="bold">MAX98357A (Spk) - BCLK</text>
+
+    <!-- Pin 12: D12 -->
+    <rect x="400" y="498" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="415" y="514" text-anchor="end" fill="#cbd5e1" font-size="11" font-weight="bold">D12</text>
+    <text x="380" y="514" text-anchor="end" fill="#64748b" font-size="11">Strapping (Dejar libre)</text>
+
+    <!-- Pin 13: D13 (SERVO 1: PUERTA PRINCIPAL) -->
+    <rect x="400" y="536" width="40" height="24" rx="4" fill="#e11d48"/>
+    <text x="415" y="552" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">D13</text>
+    <path d="M 395 548 L 280 548" stroke="#f43f5e" stroke-width="2.5"/>
+    <rect x="40" y="534" width="230" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+    <text x="155" y="553" text-anchor="middle" fill="#ffe4e6" font-size="12" font-weight="bold">🚪 SERVO 1: Puerta Principal</text>
+
+    <!-- Pin 14: GND -->
+    <rect x="400" y="574" width="40" height="24" rx="4" fill="#334155"/>
+    <text x="415" y="590" text-anchor="end" fill="#94a3b8" font-size="11" font-weight="bold">GND</text>
+    <path d="M 395 586 L 280 586" stroke="#64748b" stroke-width="2"/>
+    <rect x="90" y="572" width="180" height="28" rx="6" fill="#1e293b" stroke="#64748b"/>
+    <text x="180" y="591" text-anchor="middle" fill="#cbd5e1" font-size="12" font-weight="bold">GND Común (Tierra)</text>
+
+    <!-- Pin 15: VIN (5V) -->
+    <rect x="400" y="612" width="40" height="24" rx="4" fill="#b91c1c"/>
+    <text x="415" y="628" text-anchor="end" fill="#ffffff" font-size="11" font-weight="bold">VIN</text>
+    <path d="M 395 624 L 280 624" stroke="#ef4444" stroke-width="2.5"/>
+    <rect x="40" y="610" width="230" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/>
+    <text x="155" y="629" text-anchor="middle" fill="#fee2e2" font-size="12" font-weight="bold">⚡ Entrada +5V Fuente Externa</text>
+
+
+    <!-- RIGHT SIDE PINS (15 Pins) -->
+    <!-- Pin 30: D23 (LED 5: TERRAZA) -->
+    <rect x="700" y="80" width="40" height="24" rx="4" fill="#ca8a04"/>
+    <text x="715" y="96" fill="#ffffff" font-size="11" font-weight="bold">D23</text>
+    <path d="M 745 92 L 860 92" stroke="#eab308" stroke-width="2"/>
+    <rect x="860" y="78" width="220" height="28" rx="6" fill="#713f12" stroke="#eab308"/>
+    <text x="970" y="97" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="bold">💡 LED 5: Luz Terraza</text>
+
+    <!-- Pin 29: D22 (LED 4: BAÑO) -->
+    <rect x="700" y="118" width="40" height="24" rx="4" fill="#ca8a04"/>
+    <text x="715" y="134" fill="#ffffff" font-size="11" font-weight="bold">D22</text>
+    <path d="M 745 130 L 860 130" stroke="#eab308" stroke-width="2"/>
+    <rect x="860" y="116" width="220" height="28" rx="6" fill="#713f12" stroke="#eab308"/>
+    <text x="970" y="135" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="bold">💡 LED 4: Luz Baño</text>
+
+    <!-- Pin 28: TX0 -->
+    <rect x="700" y="156" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="715" y="172" fill="#cbd5e1" font-size="11" font-weight="bold">TX0</text>
+    <text x="760" y="172" fill="#64748b" font-size="11">Reservado UART USB</text>
+
+    <!-- Pin 27: RX0 -->
+    <rect x="700" y="194" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="715" y="210" fill="#cbd5e1" font-size="11" font-weight="bold">RX0</text>
+    <text x="760" y="210" fill="#64748b" font-size="11">Reservado UART USB</text>
+
+    <!-- Pin 26: D21 (LED 3: HABITACIÓN) -->
+    <rect x="700" y="232" width="40" height="24" rx="4" fill="#ca8a04"/>
+    <text x="715" y="248" fill="#ffffff" font-size="11" font-weight="bold">D21</text>
+    <path d="M 745 244 L 860 244" stroke="#eab308" stroke-width="2"/>
+    <rect x="860" y="230" width="220" height="28" rx="6" fill="#713f12" stroke="#eab308"/>
+    <text x="970" y="249" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="bold">💡 LED 3: Luz Habitación</text>
+
+    <!-- Pin 25: D19 (LED 2: SALA) -->
+    <rect x="700" y="270" width="40" height="24" rx="4" fill="#ca8a04"/>
+    <text x="715" y="286" fill="#ffffff" font-size="11" font-weight="bold">D19</text>
+    <path d="M 745 282 L 860 282" stroke="#eab308" stroke-width="2"/>
+    <rect x="860" y="268" width="220" height="28" rx="6" fill="#713f12" stroke="#eab308"/>
+    <text x="970" y="287" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="bold">💡 LED 2: Luz Sala</text>
+
+    <!-- Pin 24: D18 (LED 1: COCINA) -->
+    <rect x="700" y="308" width="40" height="24" rx="4" fill="#ca8a04"/>
+    <text x="715" y="324" fill="#ffffff" font-size="11" font-weight="bold">D18</text>
+    <path d="M 745 320 L 860 320" stroke="#eab308" stroke-width="2"/>
+    <rect x="860" y="306" width="220" height="28" rx="6" fill="#713f12" stroke="#eab308"/>
+    <text x="970" y="325" text-anchor="middle" fill="#fef08a" font-size="12" font-weight="bold">💡 LED 1: Luz Cocina (Tu LED)</text>
+
+    <!-- Pin 23: D5 (SERVO 4: TERRAZA) -->
+    <rect x="700" y="346" width="40" height="24" rx="4" fill="#e11d48"/>
+    <text x="715" y="362" fill="#ffffff" font-size="11" font-weight="bold">D5</text>
+    <path d="M 745 358 L 860 358" stroke="#f43f5e" stroke-width="2.5"/>
+    <rect x="860" y="344" width="220" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+    <text x="970" y="363" text-anchor="middle" fill="#ffe4e6" font-size="12" font-weight="bold">🚪 SERVO 4: Puerta Terraza</text>
+
+    <!-- Pin 22: TX2 (SERVO 3: BAÑO) -->
+    <rect x="700" y="384" width="40" height="24" rx="4" fill="#e11d48"/>
+    <text x="715" y="400" fill="#ffffff" font-size="11" font-weight="bold">TX2</text>
+    <path d="M 745 396 L 860 396" stroke="#f43f5e" stroke-width="2.5"/>
+    <rect x="860" y="382" width="220" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+    <text x="970" y="401" text-anchor="middle" fill="#ffe4e6" font-size="12" font-weight="bold">🚪 SERVO 3: Puerta Baño</text>
+
+    <!-- Pin 21: RX2 (SERVO 2: HABITACIÓN) -->
+    <rect x="700" y="422" width="40" height="24" rx="4" fill="#e11d48"/>
+    <text x="715" y="438" fill="#ffffff" font-size="11" font-weight="bold">RX2</text>
+    <path d="M 745 434 L 860 434" stroke="#f43f5e" stroke-width="2.5"/>
+    <rect x="860" y="420" width="220" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+    <text x="970" y="439" text-anchor="middle" fill="#ffe4e6" font-size="12" font-weight="bold">🚪 SERVO 2: Puerta Habitación</text>
+
+    <!-- Pin 20: D4 (OLED SDA) -->
+    <rect x="700" y="460" width="40" height="24" rx="4" fill="#0d9488"/>
+    <text x="715" y="476" fill="#ffffff" font-size="11" font-weight="bold">D4</text>
+    <path d="M 745 472 L 860 472" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="860" y="458" width="220" height="28" rx="6" fill="#134e4a" stroke="#14b8a6"/>
+    <text x="970" y="477" text-anchor="middle" fill="#99f6e4" font-size="12" font-weight="bold">OLED SSD1306 - SDA (Datos)</text>
+
+    <!-- Pin 19: D2 (LED AZUL ONBOARD) -->
+    <rect x="700" y="498" width="40" height="24" rx="4" fill="#475569"/>
+    <text x="715" y="514" fill="#cbd5e1" font-size="11" font-weight="bold">D2</text>
+    <text x="760" y="514" fill="#64748b" font-size="11">LED Azul integrado</text>
+
+    <!-- Pin 18: D15 (OLED SCL) -->
+    <rect x="700" y="536" width="40" height="24" rx="4" fill="#0d9488"/>
+    <text x="715" y="552" fill="#ffffff" font-size="11" font-weight="bold">D15</text>
+    <path d="M 745 548 L 860 548" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="860" y="534" width="220" height="28" rx="6" fill="#134e4a" stroke="#14b8a6"/>
+    <text x="970" y="553" text-anchor="middle" fill="#99f6e4" font-size="12" font-weight="bold">OLED SSD1306 - SCL (Reloj)</text>
+
+    <!-- Pin 17: GND -->
+    <rect x="700" y="574" width="40" height="24" rx="4" fill="#334155"/>
+    <text x="715" y="590" fill="#94a3b8" font-size="11" font-weight="bold">GND</text>
+    <path d="M 745 586 L 860 586" stroke="#64748b" stroke-width="2"/>
+    <rect x="860" y="572" width="220" height="28" rx="6" fill="#1e293b" stroke="#64748b"/>
+    <text x="970" y="591" text-anchor="middle" fill="#cbd5e1" font-size="12" font-weight="bold">GND Común (Tierra)</text>
+
+    <!-- Pin 16: 3V3 -->
+    <rect x="700" y="612" width="40" height="24" rx="4" fill="#0284c7"/>
+    <text x="715" y="628" fill="#ffffff" font-size="11" font-weight="bold">3V3</text>
+    <path d="M 745 624 L 860 624" stroke="#38bdf8" stroke-width="2"/>
+    <rect x="860" y="610" width="220" height="28" rx="6" fill="#0c4a6e" stroke="#38bdf8"/>
+    <text x="970" y="629" text-anchor="middle" fill="#bae6fd" font-size="12" font-weight="bold">Salida 3.3V (OLED y Mic VDD)</text>
+  </svg>
+</body>
+</html>
+

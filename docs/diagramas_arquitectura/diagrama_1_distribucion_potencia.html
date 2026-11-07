@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Diagrama 1: Distribución de Potencia y Alimentación</title>
+<style>
+  body {
+    margin: 0;
+    padding: 30px;
+    background: #0f172a;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #f8fafc;
+    width: 1200px;
+    height: 750px;
+    box-sizing: border-box;
+  }
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 26px;
+    color: #38bdf8;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 25px;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+  .card h2 {
+    font-size: 18px;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .power-source {
+    border-color: #f59e0b;
+  }
+  .power-source h2 { color: #fbbf24; }
+  .badge {
+    background: #d97706;
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .line-red { color: #f87171; font-weight: bold; }
+  .line-black { color: #94a3b8; font-weight: bold; }
+  .line-orange { color: #fb923c; font-weight: bold; }
+  .diagram-svg {
+    width: 100%;
+    height: 560px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>⚡ ARQUITECTURA DE ALIMENTACIÓN ELÉCTRICA Y MASAS</h1>
+  <div class="subtitle">Maqueta de Apartamento Inteligente - ESP32 DevKit v1 + 4 Servos 180° + 5 LEDs + Audio I2S</div>
+
+  <svg class="diagram-svg" viewBox="0 0 1140 560" xmlns="http://www.w3.org/2000/svg">
+    <!-- Definitions for markers and filters -->
+    <defs>
+      <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#ef4444"/>
+      </marker>
+      <marker id="arrow-black" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b"/>
+      </marker>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+      </marker>
+      <linearGradient id="grad-power" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#b45309" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#78350f" stop-opacity="0.9"/>
+      </linearGradient>
+      <linearGradient id="grad-esp" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1e3a8a" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+      </linearGradient>
+      <linearGradient id="grad-servos" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#831843" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#500724" stop-opacity="0.9"/>
+      </linearGradient>
+      <linearGradient id="grad-audio" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#065f46" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#022c22" stop-opacity="0.9"/>
+      </linearGradient>
+    </defs>
+
+    <!-- FUENTE EXTERNA -->
+    <rect x="30" y="40" width="220" height="200" rx="12" fill="url(#grad-power)" stroke="#f59e0b" stroke-width="2.5"/>
+    <text x="140" y="80" text-anchor="middle" fill="#fef08a" font-size="18" font-weight="bold">FUENTE EXTERNA</text>
+    <text x="140" y="110" text-anchor="middle" fill="#ffffff" font-size="24" font-weight="900">5V DC @ 3A</text>
+    <rect x="50" y="135" width="180" height="30" rx="6" fill="#1e293b"/>
+    <text x="140" y="155" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="bold">Regulada (15 Watts)</text>
+    <circle cx="65" cy="205" r="8" fill="#ef4444"/>
+    <text x="85" y="210" fill="#fca5a5" font-size="14" font-weight="bold">+5V Positivo</text>
+    <circle cx="175" cy="205" r="8" fill="#475569"/>
+    <text x="195" y="210" fill="#cbd5e1" font-size="14" font-weight="bold">GND</text>
+
+    <!-- CONDENSADOR DE DESACOPLO -->
+    <rect x="30" y="270" width="220" height="90" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+    <text x="140" y="300" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="bold">Condensador Filtro</text>
+    <text x="140" y="325" text-anchor="middle" fill="#ffffff" font-size="18" font-weight="bold">220µF - 470µF</text>
+    <text x="140" y="345" text-anchor="middle" fill="#94a3b8" font-size="11">Absorbe picos de los servos</text>
+
+    <!-- BLOQUE ESP32 -->
+    <rect x="340" y="40" width="340" height="470" rx="14" fill="url(#grad-esp)" stroke="#3b82f6" stroke-width="2.5"/>
+    <text x="510" y="80" text-anchor="middle" fill="#60a5fa" font-size="20" font-weight="bold">ESP32 DevKit v1</text>
+    <text x="510" y="105" text-anchor="middle" fill="#93c5fd" font-size="13">Controlador Central y Asistente de Voz</text>
+
+    <!-- PINES ESP32 DESTACADOS -->
+    <g transform="translate(360, 130)">
+      <!-- VIN & GND -->
+      <rect x="0" y="0" width="140" height="35" rx="6" fill="#7f1d1d" stroke="#ef4444"/>
+      <text x="70" y="22" text-anchor="middle" fill="#fca5a5" font-size="13" font-weight="bold">Pin VIN (5V In)</text>
+
+      <rect x="160" y="0" width="140" height="35" rx="6" fill="#334155" stroke="#94a3b8"/>
+      <text x="230" y="22" text-anchor="middle" fill="#f1f5f9" font-size="13" font-weight="bold">Pin GND</text>
+
+      <rect x="0" y="55" width="140" height="35" rx="6" fill="#0369a1" stroke="#38bdf8"/>
+      <text x="70" y="77" text-anchor="middle" fill="#e0f2fe" font-size="13" font-weight="bold">Pin 3V3 (Salida)</text>
+
+      <rect x="160" y="55" width="140" height="35" rx="6" fill="#1e293b" stroke="#64748b"/>
+      <text x="230" y="77" text-anchor="middle" fill="#cbd5e1" font-size="11">Regulador AMS1117</text>
+
+      <!-- PWM SERVOS PINS -->
+      <rect x="0" y="115" width="300" height="90" rx="8" fill="#1e293b" stroke="#ec4899"/>
+      <text x="15" y="138" fill="#f472b6" font-size="13" font-weight="bold">Salidas PWM LEDC (50 Hz) - Servos:</text>
+      <text x="20" y="165" fill="#fbcfe8" font-size="12">D13 (Principal) &nbsp;|&nbsp; RX2 (Habitación)</text>
+      <text x="20" y="188" fill="#fbcfe8" font-size="12">TX2 (Baño) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; D5 (Terraza)</text>
+
+      <!-- LEDS PINS -->
+      <rect x="0" y="225" width="300" height="85" rx="8" fill="#1e293b" stroke="#eab308"/>
+      <text x="15" y="248" fill="#facc15" font-size="13" font-weight="bold">Salidas Digitales - 5 LEDs Luces:</text>
+      <text x="20" y="275" fill="#fef08a" font-size="12">D18 (Cocina) &nbsp;&nbsp;|&nbsp; D19 (Sala) &nbsp;&nbsp;|&nbsp; D21 (Habitación)</text>
+      <text x="20" y="298" fill="#fef08a" font-size="12">D22 (Baño) &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp; D23 (Terraza)</text>
+
+      <!-- AUDIO & DISPLAY -->
+      <rect x="0" y="330" width="300" height="40" rx="6" fill="#1e293b" stroke="#10b981"/>
+      <text x="15" y="355" fill="#6ee7b7" font-size="12" font-weight="bold">I2S Audio (6 Pines) + I2C OLED (D4, D15)</text>
+    </g>
+
+    <!-- BLOQUE SERVOMOTORES -->
+    <rect x="760" y="40" width="350" height="190" rx="12" fill="url(#grad-servos)" stroke="#f43f5e" stroke-width="2"/>
+    <text x="935" y="75" text-anchor="middle" fill="#fecdd3" font-size="18" font-weight="bold">4x SERVOMOTORES 180° (SG90)</text>
+    <text x="935" y="100" text-anchor="middle" fill="#ffe4e6" font-size="13">Puertas: Principal, Habitación, Baño, Terraza</text>
+    <rect x="780" y="120" width="310" height="90" rx="8" fill="#1e293b"/>
+    <text x="795" y="145" fill="#ef4444" font-size="12" font-weight="bold">• Cable Rojo (VCC): Al Riel +5V Externo (Directo)</text>
+    <text x="795" y="170" fill="#94a3b8" font-size="12" font-weight="bold">• Cable Marrón/Negro (GND): A GND Común</text>
+    <text x="795" y="195" fill="#f59e0b" font-size="12" font-weight="bold">• Cable Naranja (Señal): A GPIOs (D13, RX2, TX2, D5)</text>
+
+    <!-- BLOQUE AUDIO & DISPLAY -->
+    <rect x="760" y="260" width="350" height="250" rx="12" fill="url(#grad-audio)" stroke="#10b981" stroke-width="2"/>
+    <text x="935" y="295" text-anchor="middle" fill="#a7f3d0" font-size="18" font-weight="bold">AUDIO Y PANTALLA OLED</text>
+    
+    <rect x="780" y="315" width="310" height="85" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+    <text x="795" y="340" fill="#f59e0b" font-size="13" font-weight="bold">MAX98357A (Amplificador 3W):</text>
+    <text x="795" y="365" fill="#ef4444" font-size="12" font-weight="bold">★ Vin va a 5V (VIN), NUNCA a 3.3V</text>
+    <text x="795" y="388" fill="#cbd5e1" font-size="11">GND a masa común; BCLK(D14), LRC(D27), DIN(D33)</text>
+
+    <rect x="780" y="415" width="310" height="75" rx="8" fill="#1e293b"/>
+    <text x="795" y="440" fill="#38bdf8" font-size="13" font-weight="bold">INMP441 (Mic) y OLED SSD1306:</text>
+    <text x="795" y="462" fill="#38bdf8" font-size="12">• VDD / VCC conectados al pin 3V3 del ESP32</text>
+    <text x="795" y="482" fill="#94a3b8" font-size="11">• GND a masa común; I2C SDA(D4), SCL(D15)</text>
+
+    <!-- LÍNEAS DE ALIMENTACIÓN -->
+    <!-- 5V Path to VIN -->
+    <path d="M 250 205 L 300 205 L 300 148 L 360 148" fill="none" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)"/>
+    <!-- 5V Path to Servos -->
+    <path d="M 300 205 L 300 25 L 740 25 L 740 135 L 780 135" fill="none" stroke="#ef4444" stroke-width="4" marker-end="url(#arrow-red)"/>
+    <!-- 5V Path to MAX98357A -->
+    <path d="M 740 25 L 740 350 L 780 350" fill="none" stroke="#ef4444" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrow-red)"/>
+
+    <!-- GND Bus (Masa Común) -->
+    <path d="M 250 215 L 320 215 L 320 535 L 730 535 L 730 160 L 780 160" fill="none" stroke="#64748b" stroke-width="4" marker-end="url(#arrow-black)"/>
+    <!-- GND to ESP32 -->
+    <path d="M 320 215 L 320 148 L 520 148" fill="none" stroke="#64748b" stroke-width="3"/>
+  </svg>
+</body>
+</html>
+
