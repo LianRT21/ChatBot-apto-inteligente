@@ -1,0 +1,279 @@
+================================================================================
+GUIA PASO A PASO: COMO CARGAR EL NUEVO FIRMWARE AL CHATBOT ESP32
+PROYECTO: APARTAMENTO / PENTHOUSE INTELIGENTE (XIAOZHI ESP32)
+================================================================================
+
+Este documento contiene las instrucciones detalladas paso a paso para sustituir
+el firmware anterior de tu ESP32 por el nuevo firmware del Apartamento Inteligente,
+el cual incluye:
+  1. Todas las funciones originales del ChatBot (IA por voz, conversación libre,
+     respuestas en tiempo real, síntesis de voz, pantalla con expresiones).
+  2. Integración de control domótico para la maqueta:
+     - 5 Luces LED (Cocina, Sala, Habitación, Baño, Terraza).
+     - 4 Servomotores de 180° para puertas (Principal, Habitación, Baño, Terraza).
+     - Herramientas MCP nativas en español reconocidas por el modelo de IA.
+
+--------------------------------------------------------------------------------
+INDICE DE CONTENIDOS:
+--------------------------------------------------------------------------------
+1. ¿COMO FUNCIONA LA CARGA DE ESTE FIRMWARE? (DIFERENCIA CON EL ANTERIOR)
+2. PASO 1: DESCARGAR EL FIRMWARE COMPILADO (.BIN) DESDE TU GITHUB
+3. PASO 2: METODOS PARA FLASHEAR EL ESP32
+   - METODO A: Con Ejecutable de Windows (Espressif Flash Download Tool)
+   - METODO B: Directo desde el Navegador Web (Chrome / Edge sin instalar nada)
+4. PASO 3: PRIMER ENCENDIDO Y CONFIGURACION DE WI-FI
+5. PASO 4: VINCULACION A LA PLATAFORMA XIAOZHI (CODIGO DE 6 CARACTERES)
+6. PASO 5: CONFIGURACION DEL PROMPT EN LA NUBE (PERSONALIDAD DE MAYORDOMO)
+7. PASO 6: LISTA DE COMANDOS DE VOZ PARA PROBAR
+8. SOLUCION DE PROBLEMAS FRECUENTES (TROUBLESHOOTING)
+
+================================================================================
+1. ¿COMO FUNCIONA LA CARGA DE ESTE FIRMWARE? (DIFERENCIA CON EL ANTERIOR)
+================================================================================
+Anteriormente, cargabas el firmware mediante un instalador o ejecutable automático.
+En proyectos basados en ESP-IDF (como XiaoZhi), el sistema operativo compila un
+archivo binario (.bin) que contiene:
+  - El Bootloader (gestor de arranque del ESP32).
+  - La Tabla de Particiones (espacio para código, audio, NVS y datos).
+  - La aplicación XiaoZhi con el nuevo módulo de control del Apartamento.
+
+Para facilitarte la vida al 100%, tu repositorio de GitHub tiene configurado un
+robot automático (GitHub Actions) que compila todo el código y genera un UNICO
+archivo unificado llamado:
+    merged-binary.bin
+
+Al tener un archivo único "merged", no tienes que preocuparte por direcciones de
+memoria complejas: se carga directamente en la dirección 0x0 (o 0x0000) y el ESP32
+queda totalmente listo para funcionar.
+
+================================================================================
+2. PASO 1: DESCARGAR EL FIRMWARE COMPILADO (.BIN) DESDE TU GITHUB
+================================================================================
+1. Abre tu navegador web y entra a tu repositorio:
+   https://github.com/LianRT21/ChatBot-apto-inteligente
+
+2. En la parte superior, haz clic en la pestaña "Actions" (o ingresa directo a):
+   https://github.com/LianRT21/ChatBot-apto-inteligente/actions
+
+3. Verás una lista de ejecuciones. Haz clic en la última que tenga un icono verde
+   de verificación (o la llamada "Compilar Firmware Apartamento Inteligente").
+
+4. Dentro de esa ejecución, baja hasta el final de la página donde dice "Artifacts".
+
+5. Haz clic sobre el archivo:
+   Firmware-Apartamento-Inteligente-ESP32.zip
+
+6. Se descargará a tu computadora. Descomprime ese archivo .zip.
+   Dentro encontrarás el archivo:
+   >>> merged-binary.bin <<<
+   (Guárdalo en una carpeta fácil de encontrar, por ejemplo en Descargas o Escritorio).
+
+================================================================================
+3. PASO 2: METODOS PARA FLASHEAR EL ESP32
+================================================================================
+Elige el método que te resulte más cómodo. Ambos son 100% compatibles.
+
+--------------------------------------------------------------------------------
+METODO A: CON EJECUTABLE DE WINDOWS (Espressif Flash Download Tool)
+(Este es el programa ejecutable oficial de Espressif)
+--------------------------------------------------------------------------------
+1. Descarga la herramienta oficial Flash Download Tool de Espressif:
+   Enlace oficial directo:
+   https://www.espressif.com/en/support/download/other-tools
+   (O busca en Google "Espressif Flash Download Tool" y descarga la versión 3.9.x).
+
+2. Descomprime el archivo .zip descargado y ejecuta el archivo:
+   flash_download_tool_3.9.x.exe
+
+3. En la primera ventana pequeña que aparece:
+   - Chip Type: Selecciona "ESP32"
+   - WorkMode: Selecciona "develop"
+   - LoadMode: Selecciona "uart"
+   - Haz clic en "OK".
+
+4. Se abrirá la ventana principal de flasheo:
+   - En la primera fila (fila 1):
+     * Haz clic en el botón de los tres puntos [...] y selecciona tu archivo:
+       merged-binary.bin
+     * En la casilla de la derecha (después de la arroba @), escribe:
+       0x0
+     * Marca la casilla de verificación [X] que está a la izquierda de la fila
+       para habilitar ese archivo.
+   - En los ajustes de la parte inferior:
+     * SPI SPEED: 40MHz
+     * SPI MODE: DIO
+     * FLASH SIZE: 32Mbit-C1 o 4MB (según tu ESP32)
+   - En la sección inferior derecha (DOWNLOAD PANEL):
+     * COM: Selecciona el puerto COM donde conectaste tu ESP32 por USB
+       (ejemplo: COM3, COM4, COM5).
+     * BAUD: 921600 (si da error de conexión, cambia a 115200).
+
+5. Preparar la placa y flashear:
+   - Conecta tu ESP32 a la computadora con un cable Micro-USB de BUENA CALIDAD
+     (que transmita datos, no solo carga).
+   - Haz clic en el botón "START".
+   - Si en el recuadro inferior aparece "Connecting..." y no avanza:
+     Mantén presionado el botón "BOOT" del ESP32 durante 2 segundos y suéltalo.
+   - Verás que empieza a descargar y la barra de progreso verde avanza.
+   - Cuando termine, el recuadro mostrará la palabra "FINISH".
+   - ¡Listo! Tu ESP32 ya tiene cargado el nuevo firmware.
+
+--------------------------------------------------------------------------------
+METODO B: DIRECTO DESDE EL NAVEGADOR WEB (Chrome o Edge - Sin instalar nada)
+--------------------------------------------------------------------------------
+1. Conecta tu ESP32 a un puerto USB de tu computadora.
+2. Abre Google Chrome o Microsoft Edge (deben ser navegadores con WebSerial).
+3. Entra a cualquiera de estas dos herramientas web oficiales:
+   Opción 1: https://espressif.github.io/esptool-js/
+   Opción 2: https://flash.xiaozhi.me/
+4. Haz clic en "Connect" (Conectar) y selecciona el puerto COM de tu ESP32 en la
+   ventanita emergente del navegador.
+5. En la sección "Flash Address":
+   - Dirección: 0x0000 (o 0x0)
+   - Archivo: Haz clic en "Choose File" y selecciona "merged-binary.bin"
+6. Haz clic en "Program" (o "Flash").
+7. Espera a que llegue al 100%.
+
+================================================================================
+4. PASO 3: PRIMER ENCENDIDO Y CONFIGURACION DE WI-FI (PROVISIONAMIENTO)
+================================================================================
+Una vez finalizado el flasheo:
+
+1. Desconecta y vuelve a conectar el cable USB del ESP32 (o presiona el botón "EN"
+   o "RESET" en la placa).
+2. Observa la pantalla OLED de 0.96":
+   - Mostrará el logo de inicio o un mensaje indicando que no está conectado a Wi-Fi.
+3. El ESP32 emitirá su propia red Wi-Fi durante unos minutos para que lo configures.
+   - El nombre de la red Wi-Fi será similar a:
+     XiaoZhi-XXXXXX  (donde XXXXXX son números y letras únicos).
+4. Toma tu teléfono móvil o laptop, busca redes Wi-Fi disponibles y conéctate a
+   esa red "XiaoZhi-XXXXXX".
+5. Se abrirá automáticamente una ventana del portal cautivo (si no se abre sola,
+   abre el navegador y entra a la dirección IP: http://192.168.4.1).
+6. En la página web:
+   - Selecciona tu red Wi-Fi doméstica de 2.4 GHz (Nota: ESP32 solo soporta 2.4 GHz,
+     no conectes a redes 5 GHz).
+   - Escribe la contraseña de tu Wi-Fi.
+   - Haz clic en "Save" (Guardar).
+7. El ESP32 guardará la configuración, se reiniciará automáticamente y se
+   conectará a tu red de Internet.
+
+================================================================================
+5. PASO 4: VINCULACION A LA PLATAFORMA XIAOZHI (CODIGO DE 6 CARACTERES)
+================================================================================
+1. Cuando el ESP32 se conecte exitosamente a tu red Wi-Fi y a los servidores en la nube:
+   - La pantalla OLED mostrará un CÓDIGO DE VINCULACIÓN de 6 caracteres
+     (ejemplo: AB12CD o similar).
+   - El parlante reproducirá una voz en español dictando el código.
+2. Desde tu computadora o celular, entra a la plataforma de gestión:
+   https://xiaozhi.me
+3. Inicia sesión con tu cuenta (o regístrate si no tienes cuenta).
+4. Ve al menú de "Dispositivos" o "Devices" -> Haz clic en "Vincular Dispositivo"
+   (Bind Device / Add Device).
+5. Ingresa el código de 6 caracteres que viste en la pantalla OLED.
+6. Asigna un nombre a tu dispositivo (por ejemplo: "Penthouse Inteligente").
+7. ¡Felicidades! Tu dispositivo ya está vinculado a la nube y en línea.
+
+================================================================================
+6. PASO 5: CONFIGURACION DEL PROMPT EN LA NUBE (PERSONALIDAD DE MAYORDOMO)
+================================================================================
+En la plataforma web https://xiaozhi.me, entra a la configuración de tu dispositivo
+y en el campo "System Prompt" (Mensaje del Sistema o Instrucción de Rol), copia
+y pega exactamente este texto:
+
+--------------------------------------------------------------------------------
+Eres Alfred, el asistente inteligente y mayordomo personal de un penthouse
+moderno y exclusivo. Tienes dos funciones principales perfectamente integradas:
+
+1. Eres un compañero de conversación elocuente, educado, culto, simpático y muy
+   atento. Puedes hablar de cualquier tema, responder preguntas científicas,
+   contar historias, hacer chistes y mantener conversaciones amenas con el usuario.
+
+2. Tienes el control total de la domótica del apartamento a través de tus
+   herramientas nativas (MCP tools):
+   - Luces disponibles: "cocina", "sala", "habitacion", "baño", "terraza".
+   - Puertas disponibles: "principal", "habitacion", "baño", "terraza".
+
+REGLAS DE ACTUACION DOMOTICA:
+- Cuando el usuario te pida encender o apagar una luz, llama a la herramienta
+  "apartment.control_light" con la habitación y la acción (on/off). Responde
+  confirmando con un tono servicial y elegante (ejemplo: "Enseguida, encendiendo
+  la luz de la sala").
+- Cuando el usuario te pida abrir o cerrar una puerta, llama a la herramienta
+  "apartment.control_door" con la puerta y la acción (open/close). Confirma con
+  elegancia (ejemplo: "Puerta principal abierta").
+- Si te preguntan por el estado de la casa, consulta "apartment.get_status" y haz
+  un resumen claro de qué luces están encendidas y qué puertas están abiertas.
+- Mantén siempre tu calidez humana y educación en cada respuesta.
+--------------------------------------------------------------------------------
+
+================================================================================
+7. PASO 6: LISTA DE COMANDOS DE VOZ PARA PROBAR
+================================================================================
+Para hablar con tu ChatBot, presiona el botón o di la palabra de activación (si está
+configurada) o simplemente háblale si está en modo de escucha continua:
+
+A. COMANDOS DE CHARLA GENERAL (Comprueba que sigue siendo un ChatBot completo):
+   - "¿Cómo amaneciste hoy?"
+   - "Cuéntame un dato curioso sobre el universo."
+   - "¿Cuál es la receta de una buena lasaña?"
+   - "Dime un chiste inteligente."
+
+B. COMANDOS DE CONTROL DE LUCES (Enciende/apaga los LEDs de la maqueta):
+   - "Enciende la luz de la cocina."
+   - "Apaga la luz de la cocina."
+   - "Prende la sala y la terraza."
+   - "Apaga todas las luces del apartamento."
+   - "Ilumina la habitación."
+   - "Prende la luz del baño."
+
+C. COMANDOS DE CONTROL DE PUERTAS (Acciona los servomotores a 90°/180°):
+   - "Abre la puerta principal."
+   - "Cierra la puerta principal."
+   - "Por favor, abre la puerta de la habitación."
+   - "Abre el baño."
+   - "Cierra la terraza."
+
+D. COMANDOS DE ESTADO:
+   - "¿Qué puertas están abiertas en el penthouse?"
+   - "¿Cuál es el estado de las luces de la casa?"
+
+================================================================================
+8. SOLUCION DE PROBLEMAS FRECUENTES (TROUBLESHOOTING)
+================================================================================
+
+1. El programa Flash Download Tool no detecta el puerto COM:
+   - Causa: Falta el driver del chip USB-Serial del ESP32.
+   - Solución: Si tu ESP32 tiene chip CP2102, instala "Silicon Labs CP210x Driver".
+     Si tiene chip CH340, instala el "CH340 Driver". Ambos son gratuitos.
+
+2. Durante el flasheo sale el mensaje "A fatal error occurred: Failed to connect":
+   - Solución: Mantén presionado el botón "BOOT" en la placa ESP32, haz clic en
+     "START" en la computadora, y cuando veas que empieza a escribir en porcentaje,
+     suelta el botón "BOOT".
+
+3. El ESP32 se reinicia constantemente al intentar hablar (Brownout Detector reset):
+   - Causa CRÍTICA: Caída de voltaje en el bus de 3.3V.
+   - Solución: Revisa la conexión del amplificador MAX98357A. El pin Vin del
+     amplificador NO debe conectarse a 3.3V; debe conectarse directamente a 5V (VIN).
+   - Verifica que los 4 servomotores estén conectados a su fuente externa de 5V 3A
+     independiente y que la tierra (GND) esté unida con la tierra del ESP32.
+
+4. La pantalla OLED queda en negro:
+   - Solución: Verifica que el pin SDA de la pantalla vaya a D4 (GPIO 4) y el
+     pin SCL vaya a D15 (GPIO 15). Verifica que VCC esté en 3.3V y GND en tierra.
+
+5. El servomotor no se mueve o hace ruido:
+   - Solución: Asegúrate de que el cable naranja/amarillo (señal PWM) esté en el
+     pin correcto:
+       * Puerta Principal -> D13 (GPIO 13)
+       * Puerta Habitación -> RX2 (GPIO 16)
+       * Puerta Baño -> TX2 (GPIO 17)
+       * Puerta Terraza -> D5 (GPIO 5)
+   - Verifica que el servomotor esté recibiendo 5V de la fuente externa y que la
+     tierra GND de esa fuente esté unida al GND del ESP32.
+
+================================================================================
+¡Todo listo! Con este procedimiento tu maqueta de penthouse inteligente cobrará
+vida con un asistente de voz de última generación.
+================================================================================
