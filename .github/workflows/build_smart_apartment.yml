@@ -29,3 +29,4 @@ jobs:
           name: Firmware-Apartamento-Inteligente-ESP32
           path: build/merged-binary.bin
           if-no-files-found: error
+

@@ -5,6 +5,8 @@
 #include "display.h"
 
 #include <esp_log.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <algorithm>
 #include <cstring>
 #include <cstdio>
@@ -447,5 +449,55 @@ void SmartApartmentController::RegisterMcpTools() {
             return GetStatusJson(); // Puntero cJSON* transferido a ReturnValue
         }
     );
+
+    // 4. Herramienta para autodiagnóstico de hardware
+    mcp_server.AddTool(
+        "apartment.self_test",
+        "Ejecuta una prueba o diagnóstico automático de hardware en la maqueta del apartamento:\n"
+        "Enciende y apaga secuencialmente cada una de las 5 luces y abre y cierra cada una de las 4 puertas.\n"
+        "Usa esta herramienta cuando el usuario pida 'haz una prueba de hardware', 'revisa los componentes', "
+        "'prueba las luces y puertas', 'modo diagnóstico' o similar.",
+        PropertyList(),
+        [this](const PropertyList& properties) -> ReturnValue {
+            StartHardwareSelfTest();
+            return "Diagnostico de hardware iniciado. Probando luces y servomotores secuencialmente.";
+        }
+    );
+}
+
+void SmartApartmentController::StartHardwareSelfTest() {
+    xTaskCreate(SelfTestTask, "apt_self_test", 4096, this, 5, nullptr);
+}
+
+void SmartApartmentController::SelfTestTask(void* arg) {
+    auto* self = static_cast<SmartApartmentController*>(arg);
+    ESP_LOGI(TAG, "Iniciando diagnóstico secuencial de hardware...");
+
+    const std::string rooms[] = {"cocina", "sala", "habitacion", "bano", "terraza"};
+    const std::string doors[] = {"principal", "habitacion", "bano", "terraza"};
+
+    // 1. Probar cada luz individualmente
+    for (const auto& room : rooms) {
+        self->SetLight(room, true);
+        vTaskDelay(pdMS_TO_TICKS(400));
+        self->SetLight(room, false);
+        vTaskDelay(pdMS_TO_TICKS(150));
+    }
+
+    // 2. Probar cada puerta individualmente (abrir a 90° y cerrar a 0°)
+    for (const auto& door : doors) {
+        self->SetDoor(door, true, 90);
+        vTaskDelay(pdMS_TO_TICKS(700));
+        self->SetDoor(door, false, 0);
+        vTaskDelay(pdMS_TO_TICKS(400));
+    }
+
+    // 3. Encender todas las luces y luego apagarlas como señal de finalización
+    self->SetAllLights(true);
+    vTaskDelay(pdMS_TO_TICKS(500));
+    self->SetAllLights(false);
+
+    ESP_LOGI(TAG, "Diagnóstico secuencial de hardware finalizado.");
+    vTaskDelete(nullptr);
 }
 

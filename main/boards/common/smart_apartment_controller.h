@@ -79,9 +79,18 @@ public:
      */
     cJSON* GetStatusJson();
 
+    /**
+     * Ejecuta una secuencia de prueba/diagnóstico automático de hardware:
+     * Enciende y apaga secuencialmente cada luz y abre y cierra cada puerta
+     * para comprobar el circuito físico en la maqueta sin bloquear el sistema.
+     */
+    void StartHardwareSelfTest();
+
 private:
     SmartApartmentController();
     ~SmartApartmentController() = default;
+
+    static void SelfTestTask(void* arg);
 
     void SetupLights();
     void SetupServos();
